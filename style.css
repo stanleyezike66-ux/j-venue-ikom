@@ -1,0 +1,977 @@
+
+/* =====================================================
+   1. COLOURS, FONTS AND SIZES (change your look here!)
+   Each line is a named value you can reuse with var(--name).
+   Change a colour here and it changes everywhere on the site.
+   ===================================================== */
+:root {
+    /* Dark colours */
+    --deep:   #0b2a2f;   /* dark teal (main dark background) */
+    --deep2:  #12393f;   /* slightly lighter teal (booking form box) */
+
+    /* Light colours */
+    --ivory:  #faf6ee;   /* warm cream (page background) */
+    --sand:   #f1e8d8;   /* darker cream (alternate sections) */
+
+    /* Accent colours */
+    --gold:   #d4a24c;   /* buttons and lines */
+    --gold2:  #ecd29a;   /* light gold (headings on dark) */
+    --copper: #b8672f;   /* prices, icons, small details */
+
+    /* Text colours */
+    --text:   #1f2a2b;   
+    --muted:  #5d6b6c;   
+
+    /* Other settings */
+    --nav: 78px;                                /* height of the top menu bar */
+    --e: cubic-bezier(.22, 1, .36, 1);          /* smooth animation curve */
+
+    /* Fonts (the words after the first are backups if it fails to load) */
+    --fd: "Cormorant Garamond", Georgia, serif;         /* headings */
+    --fb: Jost, system-ui, sans-serif;                  /* body text */
+}
+
+
+/* =====================================================
+   2. RESET: remove the browser's built-in spacing and styles
+   so every browser starts from the same blank page.
+   ===================================================== */
+* {
+    box-sizing: border-box;   /* padding stays INSIDE a box's width */
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;      /* menu links glide instead of jumping */
+    scroll-padding-top: 70px;     /* stops the fixed menu hiding section titles */
+}
+
+body {
+    /* "font" shorthand = weight  size/line-height  family */
+    font: 300 1rem/1.65 var(--fb);
+    color: var(--text);
+    background: var(--ivory);
+    overflow-x: hidden;           /* no sideways scrolling */
+}
+
+img {
+    max-width: 100%;              /* pictures never get wider than their box */
+    display: block;
+}
+
+a {
+    color: inherit;               /* links use the surrounding text colour */
+    text-decoration: none;        /* no underline */
+}
+
+ul {
+    list-style: none;             /* no bullet points */
+}
+
+button {
+    font: inherit;
+    cursor: pointer;              /* hand cursor on hover */
+    border: 0;
+    background: none;
+}
+
+input, select, textarea {
+    font: inherit;                /* form fields use the page font */
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--fd);
+    font-weight: 600;
+    line-height: 1.15;
+}
+
+h2 {
+    /* clamp(smallest, ideal, biggest): grows with the screen, within limits */
+    font-size: clamp(2rem, 4vw, 2.75rem);
+}
+
+/* Gold outline when someone navigates with the keyboard (accessibility) */
+:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+}
+
+
+/* =====================================================
+   3. REUSABLE BUILDING BLOCKS
+   ===================================================== */
+
+/* Centres the content and stops it getting too wide */
+.wrap {
+    max-width: 1180px;
+    margin: 0 auto;               /* "auto" on left/right = centred */
+    padding: 0 24px;
+}
+
+/* Every section gets space above and below */
+section {
+    padding: 100px 0;
+}
+
+/* The centred title + subtitle at the top of each section */
+.head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 52px;
+}
+.head p {
+    color: var(--muted);
+    margin-top: 10px;
+}
+
+/* Background styles for sections */
+.dark {
+    background: var(--deep);
+    color: var(--ivory);
+}
+.dark .head p {
+    color: rgba(250, 246, 238, .72);   /* rgba = colour with see-through amount */
+}
+.alt {
+    background: var(--sand);
+}
+
+/* ---- Buttons ---- */
+.btn {
+    display: inline-block;
+    padding: 14px 32px;
+    border-radius: 4px;           /* slightly rounded corners */
+    background: var(--gold);
+    color: var(--deep);
+    font-weight: 500;
+    transition: .3s var(--e);     /* smooth change when hovering */
+}
+.btn:hover {                       /* :hover = while the mouse is over it */
+    background: var(--gold2);
+    transform: translateY(-2px);   /* lifts up 2px */
+}
+
+/* Outlined button (used in the hero) */
+.btn.out {
+    background: none;
+    border: 1px solid rgba(250, 246, 238, .6);
+    color: var(--ivory);
+}
+
+/* Small copper button (used on room cards) */
+.btn.ghost {
+    background: none;
+    border: 1px solid var(--copper);
+    color: var(--copper);
+    padding: 10px 24px;
+    font-size: .88rem;
+}
+.btn.ghost:hover {
+    background: var(--copper);
+    color: #fff;
+}
+
+/* Makes a button the full width of its box */
+.block {
+    width: 100%;
+    text-align: center;
+}
+
+/* ---- Scroll animation ----
+   Items start invisible and slightly lower. When you scroll to them,
+   the JavaScript adds the class "in" and they fade up into place.
+   ".js" means this only happens if JavaScript is working. */
+.js .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity .8s var(--e), transform .8s var(--e);
+}
+.js .reveal.in {
+    opacity: 1;
+    transform: none;
+}
+
+/* ---- Missing picture placeholder ----
+   If a photo can't load, the JavaScript adds class "ph" to its box
+   and the box shows a coloured gradient with the picture's name. */
+.ph {
+    background: linear-gradient(135deg, var(--deep2), var(--copper));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    color: var(--ivory);
+    text-align: center;
+    padding: 12px;
+}
+.ph::before {
+    content: attr(data-l);        /* shows the text from data-l="..." */
+}
+
+
+/* =====================================================
+   4. TOP MENU BAR (HEADER)
+   ===================================================== */
+header {
+    position: fixed;              /* stays at the top while you scroll */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 500;                 /* sits above everything else */
+    height: var(--nav);
+    display: flex;
+    align-items: center;
+    transition: height .4s;
+}
+
+/* The dark bar BEHIND the menu. It is invisible at first and fades in
+   after scrolling (the JavaScript adds the class "sc"). */
+header::before {
+    content: "";
+    position: absolute;
+    inset: 0;                     /* stretch to fill the header */
+    z-index: -1;                  /* behind the menu text */
+    background: rgba(11, 42, 47, .94);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, .25);
+    opacity: 0;
+    transition: opacity .4s;
+}
+header.sc {
+    --nav: 66px;                  /* menu gets a little shorter when scrolled */
+}
+header.sc::before {
+    opacity: 1;
+}
+
+/* Puts the logo on the left and the links on the right */
+nav {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font: 700 1.7rem var(--fd);
+    color: var(--gold2);
+    letter-spacing: .04em;
+}
+
+/* The row of menu links */
+#links {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 2vw, 30px);
+}
+#links a {
+    position: relative;
+    color: var(--ivory);
+    font-size: .95rem;
+    padding: 6px 2px;
+    white-space: nowrap;          /* never split a link onto two lines */
+}
+
+/* The gold underline that grows when you hover a link
+   (and stays under the link of the section you are viewing: class "on") */
+#links a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width .35s;
+}
+#links a:hover::after,
+#links a.on::after {
+    width: 100%;
+}
+
+/* The gold "Book a Room" button in the menu */
+#links a.cta {
+    background: var(--gold);
+    color: var(--deep);
+    padding: 9px 20px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+#links a.cta::after {
+    display: none;                /* no underline on the button */
+}
+
+/* The three-line menu button (only shown on phones, see section 14) */
+#tog {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 30px;
+    padding: 4px 0;
+}
+#tog i {                           /* each of the three lines */
+    display: block;
+    height: 2px;
+    background: var(--ivory);
+    border-radius: 2px;
+    transition: .3s;
+}
+/* When the menu is open, the three lines turn into an X */
+#tog.open i:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+#tog.open i:nth-child(2) { opacity: 0; }
+#tog.open i:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+
+/* =====================================================
+   5. HERO (the big first screen)
+   ===================================================== */
+.hero {
+    position: relative;
+    height: 100vh;                /* full screen height */
+    height: 100svh;               /* better version for phones (used if supported) */
+    min-height: 560px;
+    padding: 0;
+    display: flex;
+    align-items: center;          /* centre up/down */
+    justify-content: center;      /* centre left/right */
+    overflow: hidden;
+    color: var(--ivory);
+    text-align: center;
+    background: var(--deep);
+}
+
+/* The background photo fills the whole hero */
+.hero-media {
+    position: absolute;
+    inset: 0;
+}
+.hero-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;            /* crop the photo to fill without stretching */
+}
+
+/* Dark teal tint over the photo so the text is easy to read */
+.hero-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+        rgba(11, 42, 47, .6),
+        rgba(11, 42, 47, .3) 45%,
+        rgba(11, 42, 47, .88));
+}
+
+/* The text and buttons, placed above the photo */
+.hero-in {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 0 20px;
+}
+
+/* ---- The scrolling "J-VENUE IKOM" banner ---- */
+.mq {
+    overflow: hidden;             /* hide the part that is off-screen */
+    white-space: nowrap;
+    border-top: 1px solid rgba(212, 162, 76, .5);
+    border-bottom: 1px solid rgba(212, 162, 76, .5);
+    padding: 6px 0;
+    /* fade the left and right edges */
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.mq div {
+    display: inline-flex;
+    animation: mq 26s linear infinite;   /* run the "mq" animation forever */
+}
+.mq span {
+    display: inline-block;
+    min-width: 100vw;             /* each copy is at least one screen wide = no gaps */
+    text-align: center;
+    padding-right: 4vw;
+    font: 700 clamp(2.8rem, 11vw, 8rem) var(--fd);
+    letter-spacing: .08em;
+    color: var(--gold2);
+    text-shadow: 0 0 40px rgba(212, 162, 76, .4);
+}
+/* The animation: slide left by half the width, then start again */
+@keyframes mq {
+    to { transform: translateX(-50%); }
+}
+
+.tag {                             /* "Where Luxury Meets Comfort" */
+    font: italic 400 clamp(1.1rem, 2vw, 1.5rem) var(--fd);
+    color: var(--gold2);
+    margin: 26px 0 34px;
+}
+
+/* The two hero buttons side by side */
+.acts {
+    display: flex;
+    gap: 18px;
+    justify-content: center;
+    flex-wrap: wrap;              /* drop to a new line if there is no room */
+}
+
+
+/* =====================================================
+   6. ABOUT SECTION
+   ===================================================== */
+/* Two columns: photo on the left, text on the right */
+.ag {
+    display: grid;
+    grid-template-columns: .9fr 1.1fr;    /* "fr" = shares of the space */
+    gap: 64px;
+    align-items: center;
+}
+.aimg {                            /* photo with a gold frame */
+    padding: 18px;
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+}
+.aimg img {
+    border-radius: 4px;
+    width: 100%;
+}
+.ag h2 {
+    margin-bottom: 20px;
+}
+.ag p {
+    color: var(--muted);
+    margin-bottom: 16px;
+    max-width: 60ch;              /* "ch" = about one character wide */
+}
+
+/* The three numbers: 36+, 24/7, 2 */
+.stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+}
+.stats b {
+    display: block;
+    font: 700 2.2rem var(--fd);
+    color: var(--copper);
+}
+.stats small {
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   7. ROOMS
+   ===================================================== */
+/* A grid that fits as many cards per row as possible,
+   each at least 260px wide. On a phone you get one column. */
+.rg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+}
+.room {                            /* one room card */
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(20, 16, 10, .07);   /* soft shadow */
+}
+.room .im {                        /* the box holding the photo */
+    height: 200px;
+    overflow: hidden;
+}
+.room img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s var(--e);
+}
+.room:hover img {
+    transform: scale(1.06);       /* photo zooms slightly on hover */
+}
+.rb {                              /* text area inside the card */
+    padding: 24px;
+}
+.rt {                              /* room name on the left, price on the right */
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 10px;
+}
+.rt h3 {
+    font-size: 1.3rem;
+}
+.price {
+    font: 700 1.2rem var(--fd);
+    color: var(--copper);
+    white-space: nowrap;
+}
+.price small {                     /* the "/night" part */
+    font: 400 .65rem var(--fb);
+    color: var(--muted);
+}
+.rb p {
+    color: var(--muted);
+    font-size: .92rem;
+    margin: 10px 0 14px;
+}
+.feat {                            /* the little pills: Queen bed, Free Wi-Fi... */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+.feat li {
+    font-size: .78rem;
+    background: var(--sand);
+    padding: 5px 12px;
+    border-radius: 20px;          /* big radius = pill shape */
+}
+
+
+/* =====================================================
+   8. FACILITIES
+   ===================================================== */
+.fg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 24px;
+}
+.fc {                              /* one facility box */
+    padding: 32px 24px;
+    border: 1px solid rgba(250, 246, 238, .14);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, .03);
+    transition: border-color .35s;
+}
+.fc:hover {
+    border-color: var(--gold);
+}
+.fc span {                         /* the emoji icon */
+    font-size: 1.8rem;
+    display: block;
+    margin-bottom: 12px;
+}
+.fc h3 {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+    color: var(--gold2);
+}
+.fc p {
+    color: rgba(250, 246, 238, .68);
+    font-size: .9rem;
+}
+
+
+/* =====================================================
+   9. RESTAURANT
+   ===================================================== */
+.rs {                              /* text on the left, pictures on the right */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: center;
+}
+.rs p {
+    color: var(--muted);
+    margin: 20px 0 30px;
+    max-width: 52ch;
+}
+.rim {
+    position: relative;           /* lets the small photo sit on top of the big one */
+}
+.rim .m {                          /* main (big) photo */
+    border-radius: 10px;
+    width: 100%;
+}
+.rim .s {                          /* small photo overlapping the corner */
+    position: absolute;
+    width: 46%;
+    bottom: -30px;
+    left: -20px;
+    border-radius: 10px;
+    border: 4px solid var(--ivory);
+    box-shadow: 0 14px 30px rgba(20, 16, 10, .2);
+}
+
+
+/* =====================================================
+   10. GALLERY AND PHOTO POPUP (LIGHTBOX)
+   ===================================================== */
+.gg {                              /* 4 equal columns */
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+.gi {                              /* one square gallery photo (it's a button) */
+    position: relative;
+    display: block;
+    width: 100%;
+    padding: 0;
+    border-radius: 4px;
+    overflow: hidden;
+    aspect-ratio: 1;              /* 1 = a perfect square */
+}
+.gi img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .5s var(--e);
+}
+/* The caption that fades in on hover (text comes from data-c="...") */
+.gi::after {
+    content: attr(data-c);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    padding: 14px;
+    color: #fff;
+    font-size: .85rem;
+    background: linear-gradient(transparent 50%, rgba(11, 42, 47, .8));
+    opacity: 0;
+    transition: opacity .35s;
+}
+.gi:hover img {
+    transform: scale(1.08);
+}
+.gi:hover::after,
+.gi:focus-visible::after {
+    opacity: 1;
+}
+
+/* The full-screen popup. Hidden until the JavaScript adds the class "open". */
+#lb {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 20, 23, .95);
+    display: none;                /* hidden */
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1000;
+    padding: 30px;
+}
+#lb.open {
+    display: flex;                /* shown */
+}
+#lb img {
+    max-width: min(90vw, 900px);
+    max-height: 78vh;
+    border-radius: 10px;
+}
+#lbc {                             /* caption under the big photo */
+    color: var(--ivory);
+    margin-top: 16px;
+    font: 1.1rem var(--fd);
+}
+#lbx {                             /* the X close button */
+    position: absolute;
+    top: 24px;
+    right: 30px;
+    color: var(--ivory);
+    font-size: 2rem;
+    line-height: 1;
+}
+
+
+/* =====================================================
+   11. FORMS (booking and contact)
+   ===================================================== */
+form {
+    max-width: 720px;
+    margin: 0 auto;
+}
+.fr {                              /* a row with two fields side by side */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.fgp {                             /* one label + field */
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    font-size: .82rem;
+    margin-bottom: 8px;
+}
+input, select, textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border-radius: 4px;
+    transition: .3s;
+}
+input:focus, select:focus, textarea:focus {
+    outline: 0;
+    border-color: var(--gold);    /* gold border while typing */
+}
+
+/* Booking form (dark box) */
+.bk {
+    background: var(--deep2);
+    padding: 44px;
+    border-radius: 10px;
+    border: 1px solid rgba(250, 246, 238, .1);
+}
+.bk label {
+    color: rgba(250, 246, 238, .75);
+}
+.bk input,
+.bk select {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(250, 246, 238, .2);
+    color: var(--ivory);
+    color-scheme: dark;           /* makes the date picker icon visible */
+}
+.bk option {
+    background: var(--deep);
+    color: var(--ivory);
+}
+
+/* The small message under a form button */
+.note {
+    margin-top: 16px;
+    text-align: center;
+    color: var(--gold2);
+    font-size: .9rem;
+    min-height: 1.2em;
+}
+
+
+/* =====================================================
+   12. TESTIMONIALS
+   ===================================================== */
+.tg {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+}
+.tc {                              /* one review card with a gold top line */
+    background: #fff;
+    padding: 32px 28px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(20, 16, 10, .07);
+    border-top: 3px solid var(--gold);
+}
+.st {                              /* the stars */
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+}
+.tc p {
+    font-style: italic;
+    margin-bottom: 18px;
+}
+.tc b {                            /* guest name */
+    font: 600 1rem var(--fd);
+    color: var(--copper);
+}
+
+
+/* =====================================================
+   13. CONTACT AND FOOTER
+   ===================================================== */
+.cg {                              /* details on the left, form on the right */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+}
+.cl {                              /* one line: address, phone, email */
+    margin: 14px 0;
+    color: var(--muted);
+    overflow-wrap: anywhere;      /* long emails wrap instead of overflowing */
+}
+.cl a:hover {
+    color: var(--copper);
+}
+
+/* The round IG / FB / TIK icons */
+.soc {
+    display: flex;
+    gap: 12px;
+    margin: 24px 0;
+}
+.soc a {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--copper);
+    border-radius: 50%;           /* 50% = a circle */
+    font-size: .75rem;
+    color: var(--copper);
+    transition: .3s;
+}
+.soc a:hover {
+    background: var(--copper);
+    color: #fff;
+}
+
+iframe {                           /* the Google map */
+    width: 100%;
+    height: 240px;
+    border: 0;
+    display: block;
+    border-radius: 10px;
+}
+
+/* Contact form (white box, so it needs dark text) */
+.cf {
+    background: #fff;
+    padding: 36px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(20, 16, 10, .07);
+}
+.cf label {
+    color: var(--muted);
+}
+.cf input,
+.cf textarea {
+    background: var(--sand);
+    border: 1px solid rgba(20, 16, 10, .1);
+    color: var(--text);
+}
+.cf .note {
+    color: var(--copper);
+}
+
+/* ---- Footer ---- */
+footer {
+    background: #071c20;
+    color: rgba(250, 246, 238, .72);
+    padding: 80px 0 0;
+}
+.fgd {                             /* 4 footer columns */
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr;
+    gap: 40px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid rgba(250, 246, 238, .12);
+}
+footer h4 {
+    color: var(--gold2);
+    font: 500 1rem var(--fb);
+    margin-bottom: 16px;
+}
+.fl {                              /* footer logo text */
+    font: 700 1.6rem var(--fd);
+    color: var(--gold2);
+}
+footer p,
+footer a {
+    display: block;
+    margin-bottom: 10px;
+    font-size: .9rem;
+    overflow-wrap: anywhere;
+}
+footer a:hover {
+    color: var(--gold);
+}
+footer .soc {
+    margin: 0;
+}
+footer .soc a {
+    display: flex;
+    color: var(--gold2);
+    border-color: var(--gold2);
+}
+.cp {                              /* copyright line */
+    text-align: center;
+    padding: 24px 0;
+    font-size: .82rem;
+}
+.cp p {
+    margin: 0;
+}
+
+
+/* =====================================================
+   14. SMALLER SCREENS (tablets and phones)
+   Rules inside @media only apply when the screen is that size.
+   ===================================================== */
+
+/* Tablets and below (980px wide or less) */
+@media (max-width: 980px) {
+
+    /* Two-column layouts become one column */
+    .ag, .rs, .cg {
+        grid-template-columns: 1fr;
+    }
+    .fgd {
+        grid-template-columns: 1fr 1fr;
+    }
+    .gg {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    /* Show the three-line menu button */
+    #tog {
+        display: flex;
+    }
+
+    /* The menu becomes a panel that slides in from the right.
+       It starts off-screen (translateX(100%)) and hidden. */
+    #links {
+        position: fixed;
+        top: var(--nav);
+        right: 0;
+        height: calc(100vh - var(--nav));
+        width: min(78vw, 320px);
+        background: rgba(11, 42, 47, .98);
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 36px 30px;
+        gap: 22px;
+        overflow-y: auto;
+        transform: translateX(100%);
+        visibility: hidden;
+        transition: transform .4s var(--e), visibility 0s .4s;
+    }
+    /* When the JavaScript adds the class "open", slide it into view */
+    #links.open {
+        transform: none;
+        visibility: visible;
+        transition: transform .4s var(--e), visibility 0s;
+    }
+}
+
+/* Phones (640px wide or less) */
+@media (max-width: 640px) {
+    section {
+        padding: 76px 0;          /* less space between sections */
+    }
+    .fr {
+        grid-template-columns: 1fr;   /* fields stack one under another */
+        gap: 0;
+    }
+    .gg {
+        grid-template-columns: 1fr 1fr;   /* gallery: 2 columns */
+    }
+    .fgd {
+        grid-template-columns: 1fr;       /* footer: 1 column */
+    }
+    .rim .s {
+        display: none;            /* hide the small overlapping photo */
+    }
+    .bk, .cf {
+        padding: 26px 20px;
+    }
+}
+
+/* If someone has asked their device to reduce motion, turn animations off */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+    html {
+        scroll-behavior: auto;
+    }
+}
